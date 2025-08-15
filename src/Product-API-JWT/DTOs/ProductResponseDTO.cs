@@ -20,8 +20,8 @@ public class ProductResponseDTO
     public string ImageUrl { get; set; } = string.Empty;
 
     [Required(ErrorMessage = "Price is required.")]
-    [Range(1, int.MaxValue, ErrorMessage = "Price must be greater than zero.")]
-    public int Price { get; set; }
+    [Range(0.01, (double)decimal.MaxValue, ErrorMessage = "Price must be greater than zero.")]
+    public decimal Price { get; set; }
 
     public static ProductResponseDTO FromProduct(Product product)
     {
