@@ -26,7 +26,7 @@ public class ProductService(AppDbContext _dbContext) : IProductService
         return await _dbContext.Products.ToListAsync();
     }
 
-    public async Task<List<Product>> GetAllProductsPaginated(int pageNumber, int pageSize)
+    public async Task<List<Product>> GetProductsPaginated(int pageNumber, int pageSize)
     {
         var products = await _dbContext.Products.AsNoTracking()
             .OrderBy(x => x.Id)
