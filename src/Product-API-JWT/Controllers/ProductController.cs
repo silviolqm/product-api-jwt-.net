@@ -28,13 +28,13 @@ namespace Product_API_JWT.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetProductsPaginated(int pageNumber = 1, int pageSize = 10)
+        public async Task<IActionResult> GetProducts(string? searchTerm, string? sortColumn, string? sortOrder, int pageNumber = 1, int pageSize = 10)
         {
             if (pageNumber <= 0 || pageSize <= 0)
             {
                 return BadRequest("Page number and page size must be greater than zero.");
             }
-            List<Product> products = await _productService.GetAllProductsPaginated(pageNumber, pageSize);
+            List<Product> products = await _productService.GetProducts(searchTerm, sortColumn, sortOrder, pageNumber, pageSize);
             var responseDtos = products.Select(x => ProductResponseDTO.FromProduct(x)).ToList();
             return Ok(responseDtos);
         }

@@ -2,6 +2,7 @@ using Product_API_JWT.Data;
 using Product_API_JWT.Exceptions;
 using Product_API_JWT.Model;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace Product_API_JWT.Services;
 
@@ -26,10 +27,39 @@ public class ProductService(AppDbContext _dbContext) : IProductService
         return await _dbContext.Products.ToListAsync();
     }
 
-    public async Task<List<Product>> GetProductsPaginated(int pageNumber, int pageSize)
+    public async Task<List<Product>> GetProducts(string? searchTerm, string? sortColumn, string? sortOrder, int pageNumber, int pageSize)
     {
-        var products = await _dbContext.Products.AsNoTracking()
-            .OrderBy(x => x.Id)
+        var query = _dbContext.Products.AsNoTracking();
+
+        //SearchTerm
+        if (!string.IsNullOrWhiteSpace(searchTerm))
+        {
+            query = query.Where(x => x.Name.Contains(searchTerm) || x.Description.Contains(searchTerm));
+        }
+
+        //SortColumn
+        Expression<Func<Product, object>> columnSelector = sortColumn?.ToLower() switch
+        {
+            "name" => product => product.Name,
+            "price" => product => product.Price,
+            _ => product => product.Id,
+        };
+
+        //SortOrder
+        if (!string.IsNullOrWhiteSpace(sortOrder))
+        {
+            if (sortOrder.Equals("desc", StringComparison.OrdinalIgnoreCase))
+            {
+                query = query.OrderByDescending(columnSelector);
+            }
+        }
+        else
+        {
+            query = query.OrderBy(columnSelector);
+        }
+
+        //Pagination
+        var products = await query
             .Skip((pageNumber - 1) * pageSize)
             .Take(pageSize)
             .ToListAsync();
