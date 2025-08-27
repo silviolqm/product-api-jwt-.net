@@ -15,14 +15,16 @@ namespace Product_API_JWT.Controllers
         public async Task<IActionResult> CreateProduct(ProductRequestDTO productDto)
         {
             Product newProduct = await _productService.CreateProduct(productDto.toProduct());
-            return CreatedAtAction(nameof(GetProductById), new { id = newProduct.Id }, newProduct);
+            ProductResponseDTO responseDto = ProductResponseDTO.FromProduct(newProduct);
+            return CreatedAtAction(nameof(GetProductById), new { id = responseDto.Id }, responseDto);
         }
 
         [HttpGet("/all")]
         public async Task<IActionResult> GetAllProducts()
         {
             List<Product> products = await _productService.GetAllProducts();
-            return Ok(products);
+            var responseDtos = products.Select(x => ProductResponseDTO.FromProduct(x)).ToList();
+            return Ok(responseDtos);
         }
 
         [HttpGet]
@@ -33,21 +35,24 @@ namespace Product_API_JWT.Controllers
                 return BadRequest("Page number and page size must be greater than zero.");
             }
             List<Product> products = await _productService.GetAllProductsPaginated(pageNumber, pageSize);
-            return Ok(products);
+            var responseDtos = products.Select(x => ProductResponseDTO.FromProduct(x)).ToList();
+            return Ok(responseDtos);
         }
 
         [HttpGet("{id}", Name = "GetProductById")]
         public async Task<IActionResult> GetProductById(int id)
         {
             Product product = await _productService.GetProductById(id);
-            return Ok(product);
+            var responseDto = ProductResponseDTO.FromProduct(product);
+            return Ok(responseDto);
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateProduct(int id, ProductRequestDTO productDto)
         {
             Product updatedProduct = await _productService.UpdateProduct(id, productDto.toProduct());
-            return Ok(updatedProduct);
+            var responseDto = ProductResponseDTO.FromProduct(updatedProduct);
+            return Ok(responseDto);
         }
 
         [HttpDelete("{id}")]
