@@ -1,14 +1,13 @@
-using Microsoft.EntityFrameworkCore;
+using Product_API_JWT.Configs;
 using Product_API_JWT.Data;
-using Product_API_JWT.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddOpenApi();
 builder.Services.AddControllers();
-builder.Services.AddScoped<IProductService, ProductService>();
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.ResolveDependencies();
+builder.Services.ConfigureDatabase(builder.Configuration);
 
 var app = builder.Build();
 

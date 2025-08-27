@@ -8,6 +8,14 @@ namespace Product_API_JWT.Data;
 
 public static class DatabaseConfig
 {
+    public static void ConfigureDatabase(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddDbContext<AppDbContext>(options =>
+        {
+            options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
+        });
+    }
+
     public static void DoMigrations(this IApplicationBuilder app, bool isProduction)
     {
         using var serviceScope = app.ApplicationServices.CreateScope();
