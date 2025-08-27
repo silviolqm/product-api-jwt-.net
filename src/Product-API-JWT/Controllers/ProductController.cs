@@ -2,6 +2,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Product_API_JWT.DTOs;
+using Product_API_JWT.DTOs.Pagination;
 using Product_API_JWT.Model;
 using Product_API_JWT.Services;
 
@@ -12,7 +13,7 @@ namespace Product_API_JWT.Controllers
     public class ProductController(IProductService _productService) : ControllerBase
     {
         [HttpPost]
-        public async Task<IActionResult> CreateProduct(ProductRequestDTO productDto)
+        public async Task<ActionResult> CreateProduct(ProductRequestDTO productDto)
         {
             Product newProduct = await _productService.CreateProduct(productDto.toProduct());
             ProductResponseDTO responseDto = ProductResponseDTO.FromProduct(newProduct);
@@ -20,7 +21,7 @@ namespace Product_API_JWT.Controllers
         }
 
         [HttpGet("/all")]
-        public async Task<IActionResult> GetAllProducts()
+        public async Task<ActionResult<ProductResponseDTO>> GetAllProducts()
         {
             List<Product> products = await _productService.GetAllProducts();
             var responseDtos = products.Select(x => ProductResponseDTO.FromProduct(x)).ToList();
@@ -28,19 +29,25 @@ namespace Product_API_JWT.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetProducts(string? searchTerm, string? sortColumn, string? sortOrder, int pageNumber = 1, int pageSize = 10)
+        public async Task<ActionResult<PaginatedList<ProductResponseDTO>>> GetProducts(string? searchTerm, string? sortColumn, string? sortOrder, int pageNumber = 1, int pageSize = 10)
         {
             if (pageNumber <= 0 || pageSize <= 0)
             {
                 return BadRequest("Page number and page size must be greater than zero.");
             }
-            List<Product> products = await _productService.GetProducts(searchTerm, sortColumn, sortOrder, pageNumber, pageSize);
-            var responseDtos = products.Select(x => ProductResponseDTO.FromProduct(x)).ToList();
+            PaginatedList<Product> products = await _productService.GetProducts(searchTerm, sortColumn, sortOrder, pageNumber, pageSize);
+            var responseDtos = new PaginatedList<ProductResponseDTO>
+            (
+                items: products.Items.Select(x => ProductResponseDTO.FromProduct(x)).ToList(),
+                count: products.TotalCount,
+                pageIndex: products.PageIndex,
+                pageSize: products.PageSize
+            );
             return Ok(responseDtos);
         }
 
         [HttpGet("{id}", Name = "GetProductById")]
-        public async Task<IActionResult> GetProductById(int id)
+        public async Task<ActionResult<ProductResponseDTO>> GetProductById(int id)
         {
             Product product = await _productService.GetProductById(id);
             var responseDto = ProductResponseDTO.FromProduct(product);
@@ -48,7 +55,7 @@ namespace Product_API_JWT.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateProduct(int id, ProductRequestDTO productDto)
+        public async Task<ActionResult<ProductResponseDTO>> UpdateProduct(int id, ProductRequestDTO productDto)
         {
             Product updatedProduct = await _productService.UpdateProduct(id, productDto.toProduct());
             var responseDto = ProductResponseDTO.FromProduct(updatedProduct);

@@ -3,6 +3,7 @@ using Product_API_JWT.Exceptions;
 using Product_API_JWT.Model;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
+using Product_API_JWT.DTOs.Pagination;
 
 namespace Product_API_JWT.Services;
 
@@ -27,7 +28,7 @@ public class ProductService(AppDbContext _dbContext) : IProductService
         return await _dbContext.Products.ToListAsync();
     }
 
-    public async Task<List<Product>> GetProducts(string? searchTerm, string? sortColumn, string? sortOrder, int pageNumber, int pageSize)
+    public async Task<PaginatedList<Product>> GetProducts(string? searchTerm, string? sortColumn, string? sortOrder, int pageNumber, int pageSize)
     {
         var query = _dbContext.Products.AsNoTracking();
 
@@ -58,13 +59,15 @@ public class ProductService(AppDbContext _dbContext) : IProductService
             query = query.OrderBy(columnSelector);
         }
 
+        var totalCount = await query.CountAsync();
+
         //Pagination
         var products = await query
             .Skip((pageNumber - 1) * pageSize)
             .Take(pageSize)
             .ToListAsync();
 
-        return products;
+        return new PaginatedList<Product>(products, totalCount, pageNumber, pageSize);
     }
 
     public async Task<Product> GetProductById(int id)
