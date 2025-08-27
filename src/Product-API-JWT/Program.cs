@@ -22,6 +22,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 
-PrepDatabase.DoMigrations(app, app.Environment.IsProduction());
+app.DoMigrations(app.Environment.IsProduction());
+app.SeedDatabase();
 
 app.Run();
