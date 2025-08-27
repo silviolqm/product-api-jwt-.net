@@ -18,10 +18,21 @@ namespace Product_API_JWT.Controllers
             return CreatedAtAction(nameof(GetProductById), new { id = newProduct.Id }, newProduct);
         }
 
-        [HttpGet]
+        [HttpGet("/all")]
         public async Task<IActionResult> GetAllProducts()
         {
             List<Product> products = await _productService.GetAllProducts();
+            return Ok(products);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetProductsPaginated(int pageNumber = 1, int pageSize = 10)
+        {
+            if (pageNumber <= 0 || pageSize <= 0)
+            {
+                return BadRequest("Page number and page size must be greater than zero.");
+            }
+            List<Product> products = await _productService.GetAllProductsPaginated(pageNumber, pageSize);
             return Ok(products);
         }
 

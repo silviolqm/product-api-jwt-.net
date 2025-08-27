@@ -6,6 +6,7 @@ public interface IProductService
 {
     Task<Product> CreateProduct(Product product);
     Task<List<Product>> GetAllProducts();
+    Task<List<Product>> GetAllProductsPaginated(int pageNumber, int pageSize);
     Task<Product> GetProductById(int id);
     Task<Product> UpdateProduct(int id, Product product);
     Task DeleteProduct(int id);
