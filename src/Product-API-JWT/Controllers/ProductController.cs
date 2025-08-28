@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Product_API_JWT.DTOs;
@@ -12,6 +13,7 @@ namespace Product_API_JWT.Controllers
     [ApiController]
     public class ProductController(IProductService _productService) : ControllerBase
     {
+        [Authorize]
         [HttpPost]
         public async Task<ActionResult> CreateProduct(ProductRequestDTO productDto)
         {
@@ -54,6 +56,7 @@ namespace Product_API_JWT.Controllers
             return Ok(responseDto);
         }
 
+        [Authorize]
         [HttpPut("{id}")]
         public async Task<ActionResult<ProductResponseDTO>> UpdateProduct(int id, ProductRequestDTO productDto)
         {
@@ -62,6 +65,7 @@ namespace Product_API_JWT.Controllers
             return Ok(responseDto);
         }
 
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProduct(int id)
         {
