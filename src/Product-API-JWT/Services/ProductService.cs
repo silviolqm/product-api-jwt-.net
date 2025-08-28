@@ -18,9 +18,13 @@ public class ProductService(AppDbContext _dbContext) : IProductService
 
     public async Task DeleteProduct(int id)
     {
-        await _dbContext.Products
-            .Where(x => x.Id == id)
-            .ExecuteDeleteAsync();
+        var product = await _dbContext.Products.FindAsync(id);
+        if (product == null)
+        {
+            throw new ProductNotFoundException($"Product with id {id} not found.");
+        }
+        _dbContext.Products.Remove(product);
+        await _dbContext.SaveChangesAsync();
     }
 
     public async Task<List<Product>> GetAllProducts()
@@ -81,9 +85,7 @@ public class ProductService(AppDbContext _dbContext) : IProductService
         Product productToUpdate = await _dbContext.Products
             .FirstOrDefaultAsync(x => x.Id == id) ?? throw new ProductNotFoundException($"Product with id {id} not found.");
 
-        productToUpdate.Name = product.Name;
-        productToUpdate.Description = product.Description;
-        productToUpdate.Price = product.Price;
+        _dbContext.Entry(productToUpdate).CurrentValues.SetValues(product);
 
         await _dbContext.SaveChangesAsync();
 
