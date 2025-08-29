@@ -85,7 +85,10 @@ public class ProductService(AppDbContext _dbContext) : IProductService
         Product productToUpdate = await _dbContext.Products
             .FirstOrDefaultAsync(x => x.Id == id) ?? throw new ProductNotFoundException($"Product with id {id} not found.");
 
-        _dbContext.Entry(productToUpdate).CurrentValues.SetValues(product);
+        productToUpdate.Name = product.Name;
+        productToUpdate.Description = product.Description;
+        productToUpdate.ImageUrl = product.ImageUrl;
+        productToUpdate.Price = product.Price;
 
         await _dbContext.SaveChangesAsync();
 

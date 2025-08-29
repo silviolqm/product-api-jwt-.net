@@ -1,0 +1,36 @@
+services:
+  postgres:
+    image: postgres:17
+    container_name: postgres-product-api
+    environment:
+      POSTGRES_MULTIPLE_DATABASES: productdb,keycloakdb
+      POSTGRES_USER: superuser
+      POSTGRES_PASSWORD: superpass
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-multiple-databases.sh:/docker-entrypoint-initdb.d/init-multiple-databases.sh
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.3
+    container_name: keycloak-product-api
+    environment:
+      KEYCLOAK_LOGLEVEL: 'INFO'
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+      KC_HOSTNAME: 'localhost'
+      KC_HEALTH_ENABLED: 'true'
+      KC_METRICS_ENABLED: 'true'
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://postgres:5432/keycloakdb
+      KC_DB_USERNAME: superuser
+      KC_DB_PASSWORD: superpass
+    ports:
+      - "8180:8080"
+    depends_on:
+      - postgres
+    command: start-dev
+
+volumes:
+  postgres_data:

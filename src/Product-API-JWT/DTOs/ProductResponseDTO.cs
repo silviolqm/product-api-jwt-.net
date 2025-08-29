@@ -30,6 +30,7 @@ public class ProductResponseDTO
             Id = product.Id,
             Name = product.Name,
             Description = product.Description,
+            ImageUrl = product.ImageUrl,
             Price = product.Price
         };
     }

@@ -1,3 +1,4 @@
+using Microsoft.IdentityModel.Tokens;
 using Product_API_JWT.Configs;
 using Product_API_JWT.Data;
 
@@ -7,7 +8,19 @@ builder.Services.AddOpenApi();
 builder.Services.AddControllers();
 
 builder.Services.AddAuthentication()
-	.AddJwtBearer();
+	.AddJwtBearer(o =>
+    {
+        if (!builder.Environment.IsProduction())
+        {
+            o.RequireHttpsMetadata = false;
+        }
+        o.Audience = builder.Configuration["Authentication:Audience"];
+        o.MetadataAddress = builder.Configuration["Authentication:MetadataAddress"]!;
+        o.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidIssuer = builder.Configuration["Authentication:ValidIssuer"]
+        };
+    });
 builder.Services.AddAuthorization();
 
 builder.Services.ResolveDependencies();
