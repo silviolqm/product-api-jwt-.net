@@ -42,7 +42,7 @@ public static class DatabaseConfig
             {
                 var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-                var numberOfProductsToSeed = 100_000;
+                var numberOfProductsToSeed = 1000;
 
                 if (!dbContext.Products.Any())
                 {

@@ -13,7 +13,7 @@ namespace Product_API_JWT.Controllers
     [ApiController]
     public class ProductController(IProductService _productService) : ControllerBase
     {
-        [Authorize]
+        [Authorize(Roles = "api-admin")]
         [HttpPost]
         public async Task<ActionResult> CreateProduct(ProductRequestDTO productDto)
         {
@@ -22,14 +22,16 @@ namespace Product_API_JWT.Controllers
             return CreatedAtAction(nameof(GetProductById), new { id = responseDto.Id }, responseDto);
         }
 
-        [HttpGet("/all")]
-        public async Task<ActionResult<ProductResponseDTO>> GetAllProducts()
+        [Authorize]
+        [HttpGet("all")]
+        public async Task<ActionResult<List<ProductResponseDTO>>> GetAllProducts()
         {
             List<Product> products = await _productService.GetAllProducts();
             var responseDtos = products.Select(x => ProductResponseDTO.FromProduct(x)).ToList();
             return Ok(responseDtos);
         }
 
+        [Authorize]
         [HttpGet]
         public async Task<ActionResult<PaginatedList<ProductResponseDTO>>> GetProducts(string? searchTerm, string? sortColumn, string? sortOrder, int pageNumber = 1, int pageSize = 10)
         {
@@ -48,6 +50,7 @@ namespace Product_API_JWT.Controllers
             return Ok(responseDtos);
         }
 
+        [Authorize]
         [HttpGet("{id}", Name = "GetProductById")]
         public async Task<ActionResult<ProductResponseDTO>> GetProductById(int id)
         {
@@ -56,7 +59,7 @@ namespace Product_API_JWT.Controllers
             return Ok(responseDto);
         }
 
-        [Authorize]
+        [Authorize(Roles = "api-admin")]
         [HttpPut("{id}")]
         public async Task<ActionResult<ProductResponseDTO>> UpdateProduct(int id, ProductRequestDTO productDto)
         {
@@ -65,7 +68,7 @@ namespace Product_API_JWT.Controllers
             return Ok(responseDto);
         }
 
-        [Authorize]
+        [Authorize(Roles = "api-admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProduct(int id)
         {
