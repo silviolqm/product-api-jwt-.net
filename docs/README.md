@@ -1,2 +1,2 @@
-# RESTful API + Keycloak with JWT Authentication
-Simple RESTful API offering CRUD operations on Products. Uses .NET, PostgreSQL and JWT + Keycloak for Authentication/Authorization.
+# RESTful API + Keycloak with JWT Authentication (OpenID Connect - OIDC)
+Simple RESTful API offering CRUD operations on Products. Uses .NET, PostgreSQL and JWT + Keycloak to implement the OpenID Connect protocol (OIDC) for Authentication/Authorization.
