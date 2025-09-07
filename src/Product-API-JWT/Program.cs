@@ -15,15 +15,12 @@ builder.Services.AddControllers();
 builder.Services.AddAuthentication()
 	.AddJwtBearer(o =>
     {
-        if (!builder.Environment.IsProduction())
-        {
-            o.RequireHttpsMetadata = false;
-        }
-        o.Audience = builder.Configuration["Authentication:Audience"];
+        o.RequireHttpsMetadata = false; // Para facilitar rodar na rede do docker compose
         o.MetadataAddress = builder.Configuration["Authentication:MetadataAddress"]!;
         o.TokenValidationParameters = new TokenValidationParameters
         {
-            ValidIssuer = builder.Configuration["Authentication:ValidIssuer"]
+            ValidIssuer = builder.Configuration["Authentication:ValidIssuer"],
+            ValidAudience = builder.Configuration["Authentication:Audience"]
         };
     });
 builder.Services.AddAuthorization();
@@ -38,7 +35,6 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
-app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();

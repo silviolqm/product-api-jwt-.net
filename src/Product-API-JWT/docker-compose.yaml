@@ -1,4 +1,17 @@
 services:
+  api:
+    build:
+      context: ../../
+      dockerfile: src/Product-API-JWT/Dockerfile
+    container_name: dot-net-api
+    ports:
+      - "5072:5072"
+    extra_hosts:
+      - "localhost:host-gateway"
+    depends_on:
+      - postgres
+      - keycloak
+
   postgres:
     image: postgres:17
     container_name: postgres-product-api
@@ -17,8 +30,8 @@ services:
     container_name: keycloak-product-api
     environment:
       KEYCLOAK_LOGLEVEL: 'INFO'
-      KEYCLOAK_ADMIN: admin
-      KEYCLOAK_ADMIN_PASSWORD: admin
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+      KC_BOOTSTRAP_ADMIN_PASSWORD: admin
       KC_HOSTNAME: 'localhost'
       KC_HEALTH_ENABLED: 'true'
       KC_METRICS_ENABLED: 'true'
@@ -27,10 +40,12 @@ services:
       KC_DB_USERNAME: superuser
       KC_DB_PASSWORD: superpass
     ports:
-      - "8180:8080"
+      - "8080:8080"
+    volumes:
+      - ./keycloak:/opt/keycloak/data/import
     depends_on:
       - postgres
-    command: start-dev
+    command: start-dev --http-enabled=true --import-realm
 
 volumes:
   postgres_data:
