@@ -19,6 +19,7 @@ In this project we're mostly concerned with showing how to implement OIDC to all
 >1 - The User wants to access a protected resource that's stored in a Resource Server (that's our .NET API) but our user is not currently authenticated.
 
 >2 - The Client (we'll be using Postman) redirects the User to the Identity Provider (Keycloak), so he can be authenticated.
+
 >3 - Keycloak asks the User for his credentials.
 
 >4 - The User inputs his Username and Password on the form provided by Keycloak.
@@ -33,26 +34,27 @@ In this project we're mostly concerned with showing how to implement OIDC to all
 
 To run this project, you will need [Docker](https://www.docker.com/products/docker-desktop/) installed on your machine.
 
-1.  **Start the services** by running the following command from the `src/Product-API-JWT` directory:
-    ```sh
-    cd src/Product-API-JWT
-    docker compose up --build
-    ```
-    This will build the API image and start all the necessary containers (API, Keycloak, and PostgreSQL). The services will be available at the following addresses:
-    * .NET API: `http://localhost:5072`
-    * Keycloak Admin Console: `http://localhost:8080`
+Start the services by running the following command from the `src/Product-API-JWT` directory:
 
-2.  **Log in to Keycloak** to verify that the `product-api` realm has been imported.
-    * Username: `admin`
-    * Password: `admin`
+```sh
+docker compose up --build
+```
 
-3.  **Get an Authentication Token**.
-   Using Postman to request a token from Keycloak. Configure it with the following details:
+This will build the API image and start all the necessary containers (API, Keycloak, and PostgreSQL). The services will be available at the following addresses:
+
+* .NET API: `http://localhost:5072`
+* Keycloak Admin Console: `http://localhost:8080` (username/password: admin)
+
+
+## Testing the application:
+
+1. **Get an Authentication Token**.
+   Use Postman or a similar application to request a token from Keycloak. You can configure Postman with the following details:
     * Auth Type: `OAuth 2.0`
-    * Add authorization data to: Request headers
-    * Header prefix: Bearer
+    * Add authorization data to: `Request headers`
+    * Header prefix: `Bearer`
     * Token name: you may leave this empty
-    * Grant type: Authorization Code
+    * Grant type: `Authorization Code`
     * Callback URL: `https://oauth.pstmn.io/v1/callback`
     * Access Token URL: `http://localhost:8080/realms/product-api/protocol/openid-connect/token`
     * Client ID: `product-api-.net`
@@ -63,15 +65,15 @@ To run this project, you will need [Docker](https://www.docker.com/products/dock
     * Username: admintest@test.com
     * Password: Password!1
 
-4.  **Test the API**.
+2.  **Test the API**.
     Make a request to a protected endpoint, such as `GET /api/products/1`, including the obtained JWT in the `Authorization` header.
     ```http
     GET http://localhost:5072/api/products/1
     Authorization: Bearer <YOUR_JWT_TOKEN>
     ```
 
-5. **Clean-up after you're done** by running the following command from the `src/Product-API-JWT` directory:
-    ```
+3. **Clean-up after you're done** by running the following command from the `src/Product-API-JWT` directory:
+    ```sh
     docker compose down -v
     ```
 
