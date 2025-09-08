@@ -29,7 +29,7 @@ public class ProductService(AppDbContext _dbContext) : IProductService
 
     public async Task<List<Product>> GetAllProducts()
     {
-        return await _dbContext.Products.ToListAsync();
+        return await _dbContext.Products.AsNoTracking().ToListAsync();
     }
 
     public async Task<PaginatedList<Product>> GetProducts(string? searchTerm, string? sortColumn, string? sortOrder, int pageNumber, int pageSize)
@@ -76,7 +76,7 @@ public class ProductService(AppDbContext _dbContext) : IProductService
 
     public async Task<Product> GetProductById(int id)
     {
-        return await _dbContext.Products
+        return await _dbContext.Products.AsNoTracking()
             .FirstOrDefaultAsync(x => x.Id == id) ?? throw new ProductNotFoundException(id);
     }
 
