@@ -77,5 +77,18 @@ This will build the API image and start all the necessary containers (API, Keycl
     docker compose down -v
     ```
 
+## Endpoints:
+
+Here's a list of the endpoints provided by the API:
+
+| Verb | URI | Authorization | Function |
+| -------- | -------- | -------- | -------- |
+| GET | http://localhost:5072/api/products/all | Any | Returns all products |
+| GET | http://localhost:5072/api/products/ | Any | Returns products with search filter, sorting and ordering |
+| GET | http://localhost:5072/api/products/{id}  | Any | Returns a product by id |
+| POST | http://localhost:5072/api/products/ | api-admin | Creates a new product
+| DELETE | http://localhost:5072/api/products/{id} | api-admin | Deletes a product
+| PUT | http://localhost:5072/api/products/{id} | api-admin | Updates values on a product
+
 ## Disclaimers
 This is primarily a portfolio project, but in a real-world application there are several strings that should be kept safe, like passwords for databases, client secrets etc. Those were purposefully left unprotected to avoid bloating the code with secret-keeping features that would only have a purpose in a real-world applications.
