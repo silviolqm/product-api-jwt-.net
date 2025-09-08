@@ -1,4 +1,6 @@
 # .NET RESTful API with JWT Authentication (OpenID Connect - OIDC)
+![.NET](https://img.shields.io/badge/.NET-8.0-blue) ![Keycloak](https://img.shields.io/badge/Keycloak-blue?logo=keycloak) ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-blue?logo=postgresql) ![JWT](https://img.shields.io/badge/Auth-JWT-yellow) ![OpenID Connect](https://img.shields.io/badge/Protocol-OpenID%20Connect-blue?logo=openid) ![Docker](https://img.shields.io/badge/Containerized-Docker-blue?logo=docker)
+
 This project aims to exemplify how to implement the OpenID Connect (OIDC) protocol in a .NET RESTful API to enable Authentication/Authorization using JWT.
 
 ## Featured technologies:
