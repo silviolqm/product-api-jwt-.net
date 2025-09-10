@@ -58,7 +58,7 @@ public class ProductResponseDTOTests
         var dto = new ProductResponseDTO
         {
             Id = 1,
-            Name = null,
+            Name = null!,
             Description = "This is a valid description.",
             ImageUrl = "http://example.com/image.jpg",
             Price = 99.99m

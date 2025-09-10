@@ -56,7 +56,7 @@ public class ProductRequestDTOTests
     {
         var dto = new ProductRequestDTO
         {
-            Name = null,
+            Name = null!,
             Description = "This is a valid description.",
             ImageUrl = "http://example.com/image.jpg",
             Price = 99.99m
@@ -64,7 +64,7 @@ public class ProductRequestDTOTests
 
         var results = ValidateModel(dto);
 
-        results.Should().Contain(v => v.MemberNames.Contains("Name") && v.ErrorMessage.Contains("required"));
+        results.Should().Contain(v => v.MemberNames.Contains("Name") && v.ErrorMessage!.Contains("required"));
     }
 
     [Fact]
@@ -80,6 +80,6 @@ public class ProductRequestDTOTests
 
         var results = ValidateModel(dto);
 
-        results.Should().Contain(v => v.MemberNames.Contains("Price") && v.ErrorMessage.Contains("greater than zero"));
+        results.Should().Contain(v => v.MemberNames.Contains("Price") && v.ErrorMessage!.Contains("greater than zero"));
     }
 }
